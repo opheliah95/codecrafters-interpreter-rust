@@ -50,9 +50,11 @@ impl Scanner {
         return char_found;
     }
 
-    pub fn exit_with_error(self) {
+    pub fn exit(self) {
         if self.has_error {
             std::process::exit(65);
+        } else {
+            std::process::exit(0);
         }
     }
 
