@@ -64,8 +64,10 @@ impl Scanner {
 
             _ => {
                 eprintln!("[line {}] Error: Unexpected character: {}", self.line, c);
-                println!("EOF  null");
-                std::process::exit(65); // handle exit
+                if self.is_at_end() {
+                    println!("EOF  null");
+                    std::process::exit(65); // handle exit
+                }
             }
         }
     }
