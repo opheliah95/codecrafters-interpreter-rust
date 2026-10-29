@@ -63,7 +63,7 @@ impl Scanner {
             ';' => self.add_token(TokenType::SEMICOLON),
 
             _ => {
-                println!("[line {}] Error: Unexpected character: {}", self.line, c);
+                eprintln!("[line {}] Error: Unexpected character: {}", self.line, c);
                 std::process::exit(65); // handle exit
             }
         }
