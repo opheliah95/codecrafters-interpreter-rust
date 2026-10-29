@@ -4,6 +4,8 @@ pub enum TokenType {
     //one or two character token
     EQUAL,
     EQUAL_EQUAL,
+    BANG,
+    BANG_EQUAL,
 
     // keywords
     VAR,

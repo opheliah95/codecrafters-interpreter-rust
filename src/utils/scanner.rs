@@ -73,7 +73,7 @@ impl Scanner {
             return '\0';
         }
         // eprintln!("current is {current_clone}");
-        let char_found = source_cloned.chars().nth(current_clone).unwrap();
+        let char_found = source_cloned.chars().nth(current_clone+1).unwrap();
         return char_found;
     }
 
@@ -100,6 +100,18 @@ impl Scanner {
                     }
 
                     _ => self.add_token(TokenType::EQUAL),
+                }
+            },
+            '!' => {
+                let next = self.peek();
+                //eprintln!("next is {next}");
+                match next {
+                    '=' => {
+                        self.advance(); // remove next token
+                        self.add_token(TokenType::BANG_EQUAL);
+                    }
+
+                    _ => self.add_token(TokenType::BANG),
                 }
             }
 
