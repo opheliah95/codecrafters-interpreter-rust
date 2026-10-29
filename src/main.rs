@@ -52,4 +52,6 @@ fn run (source: &str) {
         println!("{}", token.to_string());
     }
 
+    if scanner.has_error
+
 }

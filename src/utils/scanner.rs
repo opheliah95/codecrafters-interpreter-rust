@@ -6,6 +6,7 @@ pub struct Scanner {
     start: usize,
     current: usize,
     line: usize,
+    has_error: bool
 }
 
 impl Scanner {
@@ -16,6 +17,7 @@ impl Scanner {
             start: 0,
             current: 0,
             line: 1,
+            has_error: false
         }
     }
 
@@ -48,6 +50,12 @@ impl Scanner {
         return char_found;
     }
 
+    pub fn exit_with_error(self) {
+        if self.has_error {
+            std::process::exit(65);
+        }
+    }
+
     pub fn scan_token(&mut self) {
         let c: char = self.advance();
         match (c) {
@@ -64,10 +72,7 @@ impl Scanner {
 
             _ => {
                 eprintln!("[line {}] Error: Unexpected character: {}", self.line, c);
-                // if self.is_at_end() {
-                //     println!("EOF  null");
-                //     std::process::exit(65); // handle exit
-                // }
+                self.has_error = true;
             }
         }
     }
