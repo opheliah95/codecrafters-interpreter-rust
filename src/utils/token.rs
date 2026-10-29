@@ -3,6 +3,7 @@ use std::fmt;
 pub enum TokenType {
     //one or two character token
     EQUAL,
+    EQUAL_EQUAL,
 
     // keywords
     VAR,

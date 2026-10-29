@@ -6,7 +6,7 @@ pub struct Scanner {
     start: usize,
     current: usize,
     line: usize,
-    has_error: bool
+    has_error: bool,
 }
 
 impl Scanner {
@@ -17,7 +17,7 @@ impl Scanner {
             start: 0,
             current: 0,
             line: 1,
-            has_error: false
+            has_error: false,
         }
     }
 
@@ -58,6 +58,17 @@ impl Scanner {
         }
     }
 
+    pub fn peek_next(&mut self) -> char {
+        let source_cloned = self.source.clone();
+        let current_clone = self.current;
+        if current_clone + 1 >= self.source.len() {
+            return '\0';
+        }
+        // eprintln!("current is {current_clone}");
+        let char_found = source_cloned.chars().nth(current_clone).unwrap();
+        return char_found;
+    }
+
     pub fn scan_token(&mut self) {
         let c: char = self.advance();
         match (c) {
@@ -71,6 +82,17 @@ impl Scanner {
             '-' => self.add_token(TokenType::MINUS),
             '+' => self.add_token(TokenType::PLUS),
             ';' => self.add_token(TokenType::SEMICOLON),
+            '=' => {
+                let next = self.peek_next();
+                match next {
+                    '=' => {
+                        self.advance(); // remove next token
+                        self.add_token(TokenType::EQUAL_EQUAL);
+                    }
+
+                    _ => self.add_token(TokenType::EQUAL),
+                }
+            }
 
             _ => {
                 eprintln!("[line {}] Error: Unexpected character: {}", self.line, c);
