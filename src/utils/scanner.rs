@@ -50,6 +50,14 @@ impl Scanner {
         return char_found;
     }
 
+    fn peek (&mut self) -> char {
+        if self.is_at_end() {
+            return '\0';
+        } else {
+            return self.source.chars().nth(self.current).unwrap();
+        }
+
+    }
     pub fn exit(self) {
         if self.has_error {
             std::process::exit(65);
@@ -83,7 +91,8 @@ impl Scanner {
             '+' => self.add_token(TokenType::PLUS),
             ';' => self.add_token(TokenType::SEMICOLON),
             '=' => {
-                let next = self.peek_next();
+                let next = self.peek();
+                //eprintln!("next is {next}");
                 match next {
                     '=' => {
                         self.advance(); // remove next token
