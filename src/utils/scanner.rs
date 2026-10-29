@@ -50,13 +50,12 @@ impl Scanner {
         return char_found;
     }
 
-    fn peek (&mut self) -> char {
+    fn peek(&mut self) -> char {
         if self.is_at_end() {
             return '\0';
         } else {
             return self.source.chars().nth(self.current).unwrap();
         }
-
     }
     pub fn exit(self) {
         if self.has_error {
@@ -73,7 +72,7 @@ impl Scanner {
             return '\0';
         }
         // eprintln!("current is {current_clone}");
-        let char_found = source_cloned.chars().nth(current_clone+1).unwrap();
+        let char_found = source_cloned.chars().nth(current_clone + 1).unwrap();
         return char_found;
     }
 
@@ -101,7 +100,7 @@ impl Scanner {
 
                     _ => self.add_token(TokenType::EQUAL),
                 }
-            },
+            }
             '!' => {
                 let next = self.peek();
                 //eprintln!("next is {next}");
@@ -112,6 +111,30 @@ impl Scanner {
                     }
 
                     _ => self.add_token(TokenType::BANG),
+                }
+            }
+            '>' => {
+                let next = self.peek();
+                //eprintln!("next is {next}");
+                match next {
+                    '=' => {
+                        self.advance(); // remove next token
+                        self.add_token(TokenType::GREATER_EQUAL);
+                    }
+
+                    _ => self.add_token(TokenType::GREATER),
+                }
+            }
+            '<' => {
+                let next = self.peek();
+                //eprintln!("next is {next}");
+                match next {
+                    '=' => {
+                        self.advance(); // remove next token
+                        self.add_token(TokenType::LESS_EQUAL);
+                    }
+
+                    _ => self.add_token(TokenType::LESS),
                 }
             }
 
