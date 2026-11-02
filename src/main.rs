@@ -22,11 +22,8 @@ fn main() {
             eprintln!("Logs from your program will appear here!");
 
             let lines = read_lines(filename);
-            if !lines.is_empty() {
-                let lines_joined = lines.join("");
-                run(&lines_joined);
-            }
-           
+            let lines_joined = lines.join("");
+            run(&lines_joined);
         }
         _ => {
             eprintln!("Unknown command: {}", command);
