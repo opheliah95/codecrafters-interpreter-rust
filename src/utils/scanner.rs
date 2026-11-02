@@ -89,15 +89,18 @@ impl Scanner {
             '-' => self.add_token(TokenType::MINUS),
             '+' => self.add_token(TokenType::PLUS),
             ';' => self.add_token(TokenType::SEMICOLON),
+            '\n' => self.line += 1,
+            x if vec![' ', '\t', '\r'].contains(&x) => {
+                return;
+            }
             '/' => {
                 let next = self.peek();
                 // see if this is a comment
                 match next {
                     '/' => {
-                        if self.peek() != '\n' && !self.is_at_end() {
+                        while self.peek() != '\n' && !self.is_at_end() {
                             self.advance(); // advancing till at end of comment
                         }
-
                     }
                     _ => self.add_token(TokenType::SLASH),
                 }
