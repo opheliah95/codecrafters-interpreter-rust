@@ -1,2 +1,2 @@
-(<|TAB|>
-<|SPACE|>)
+(( )){} // grouping stuff
+!*+-/=<> <= == // operators

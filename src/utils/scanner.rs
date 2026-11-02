@@ -47,6 +47,7 @@ impl Scanner {
         let source_cloned = self.source.clone();
         let char_found = source_cloned.chars().nth(self.current).unwrap_or_default();
         self.current += 1;
+        //eprintln!("char={char_found} advamce to {}", self.current);
         return char_found;
     }
 
@@ -78,6 +79,7 @@ impl Scanner {
 
     pub fn scan_token(&mut self) {
         let c: char = self.advance();
+        //eprintln!("c is {c}");
         match (c) {
             '(' => self.add_token(TokenType::LEFT_PAREN),
             ')' => self.add_token(TokenType::RIGHT_PAREN),
@@ -89,8 +91,12 @@ impl Scanner {
             '-' => self.add_token(TokenType::MINUS),
             '+' => self.add_token(TokenType::PLUS),
             ';' => self.add_token(TokenType::SEMICOLON),
-            '\n' => self.line += 1,
+            '\n' => {
+                self.line += 1;
+                eprintln!("whitespace line is {}", self.line);
+            },
             x if vec![' ', '\t', '\r'].contains(&x) => {
+                //eprintln!("x is {x}");
                 return;
             }
             '/' => {
