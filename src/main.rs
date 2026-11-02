@@ -21,13 +21,12 @@ fn main() {
             // You can use print statements as follows for debugging, they'll be visible when running tests.
             eprintln!("Logs from your program will appear here!");
 
-
             let lines = read_lines(filename);
-            eprintln!("lines are {:?}", lines);
-            let last_line = lines.len() - 1;
-            for (idx, line) in lines.iter().enumerate() {
-                run(&line, idx, last_line);
+            if !lines.is_empty() {
+                let lines_joined = lines.join("");
+                run(&lines_joined);
             }
+           
         }
         _ => {
             eprintln!("Unknown command: {}", command);
@@ -54,7 +53,7 @@ where
     return Ok(reader.lines());
 }
 
-fn run(source: &str, current_line: usize, last_line: usize) {
+fn run(source: &str) {
     //eprintln!("the source is {source}");
     let mut scanner: Scanner = Scanner::new(source.to_string());
     let tokens: Vec<Token> = scanner.scan_tokens();
@@ -62,8 +61,5 @@ fn run(source: &str, current_line: usize, last_line: usize) {
     for token in tokens {
         println!("{}", token.to_string());
     }
-    if source.is_empty() || current_line == last_line {
-        scanner.exit();
-
-    }
+    scanner.exit();
 }
