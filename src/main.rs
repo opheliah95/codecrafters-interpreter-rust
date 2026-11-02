@@ -28,8 +28,6 @@ fn main() {
             for (idx, line) in lines.iter().enumerate() {
                 run(&line, idx, last_line);
             }
-            // end of file
-            println!("EOF  null");
         }
         _ => {
             eprintln!("Unknown command: {}", command);
