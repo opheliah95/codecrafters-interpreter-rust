@@ -10,6 +10,7 @@ pub enum TokenType {
     LESS_EQUAL,
     GREATER,
     GREATER_EQUAL,
+    SLASH,
 
     // keywords
     VAR,
