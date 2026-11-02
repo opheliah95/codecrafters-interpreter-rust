@@ -45,7 +45,7 @@ impl Scanner {
 
     fn advance(&mut self) -> char {
         let source_cloned = self.source.clone();
-        let char_found = source_cloned.chars().nth(self.current).unwrap();
+        let char_found = source_cloned.chars().nth(self.current).unwrap_or_default();
         self.current += 1;
         return char_found;
     }
@@ -54,7 +54,7 @@ impl Scanner {
         if self.is_at_end() {
             return '\0';
         } else {
-            return self.source.chars().nth(self.current).unwrap();
+            return self.source.chars().nth(self.current).unwrap_or_default();
         }
     }
     pub fn exit(self) {
