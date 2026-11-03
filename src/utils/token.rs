@@ -11,6 +11,7 @@ pub enum TokenType {
     GREATER,
     GREATER_EQUAL,
     SLASH,
+    STAR,
 
     // keywords
     VAR,
@@ -26,7 +27,6 @@ pub enum TokenType {
     RIGHT_PAREN,
     LEFT_BRACE,
     RIGHT_BRACE,
-    STAR,
     COMMA,
     DOT,
     PLUS,

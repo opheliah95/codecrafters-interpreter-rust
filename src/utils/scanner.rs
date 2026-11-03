@@ -5,7 +5,7 @@ pub struct Scanner {
     pub tokens: Vec<Token>,
     start: usize,
     current: usize,
-    line: usize,
+    line: u16,
     has_error: bool,
 }
 
@@ -37,7 +37,7 @@ impl Scanner {
             token_type: token_type,
             lexeme: txt.to_string(),
             literal: "null".to_string(),
-            line: 1,
+            line: self.line,
         };
 
         self.tokens.push(new_token);
@@ -79,7 +79,7 @@ impl Scanner {
 
     pub fn scan_token(&mut self) {
         let c: char = self.advance();
-        //eprintln!("c is {c}");
+        //eprintln!("c is {c} c=whitespace => {}", c =='\n');
         match (c) {
             '(' => self.add_token(TokenType::LEFT_PAREN),
             ')' => self.add_token(TokenType::RIGHT_PAREN),
@@ -93,12 +93,12 @@ impl Scanner {
             ';' => self.add_token(TokenType::SEMICOLON),
             '\n' => {
                 self.line += 1;
-                eprintln!("whitespace line is {}", self.line);
+                //eprintln!("whitespace line is {}", self.line);
             },
-            x if vec![' ', '\t', '\r'].contains(&x) => {
-                //eprintln!("x is {x}");
+            x if vec![' ',  '\r'].contains(&x) => {
                 return;
-            }
+            },
+            '\t' => return, 
             '/' => {
                 let next = self.peek();
                 // see if this is a comment
@@ -172,7 +172,7 @@ impl Scanner {
             self.start = self.current;
             self.scan_token();
         }
-        
+
         self.tokens.push(Token {
             token_type: TokenType::EOF,
             lexeme: "".to_string(),

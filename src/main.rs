@@ -22,7 +22,7 @@ fn main() {
             eprintln!("Logs from your program will appear here!");
 
             let lines = read_lines(filename);
-            let lines_joined = lines.join("");
+            let lines_joined = lines.join("\n");
             run(&lines_joined);
         }
         _ => {
@@ -35,7 +35,7 @@ fn read_lines(filename: &str) -> Vec<String> {
     let mut result = Vec::new();
 
     for line in read_to_string(filename).unwrap().lines() {
-        result.push(line.to_string())
+        result.push(line.to_string());
     }
 
     result
