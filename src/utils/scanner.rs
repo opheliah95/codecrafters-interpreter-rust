@@ -31,12 +31,13 @@ impl Scanner {
         return self.current >= self.source.len();
     }
 
-    fn add_token(&mut self, token_type: TokenType) {
+    fn add_token(&mut self, token_type: TokenType, value: Option<&str>) {
         let txt = self.source.get(self.start..self.current).unwrap();
+        let literal = value.unwrap_or("null");
         let new_token = Token {
             token_type: token_type,
             lexeme: txt.to_string(),
-            literal: "null".to_string(),
+            literal: literal.to_string(),
             line: self.line,
         };
 
@@ -77,20 +78,45 @@ impl Scanner {
         return char_found;
     }
 
+     fn string_analyzer(&mut self) {
+        while self.peek() != '"' && ! self.is_at_end() {
+            // handle new line
+            if self.peek() == '\n' {
+                self.line += 1
+            }
+
+            self.advance();
+        }
+
+        if self.is_at_end() {
+            eprintln!("[line {}] Error: Unterminated string.", self.line);
+            self.has_error = true;
+        }
+
+        // handle the end ""
+        self.advance();
+        let output = self.source[self.start + 1..self.current-1].to_string();
+        self.add_token(TokenType::STRING, Some(&output));
+    }
+
     pub fn scan_token(&mut self) {
         let c: char = self.advance();
         //eprintln!("c is {c} c=whitespace => {}", c =='\n');
         match (c) {
-            '(' => self.add_token(TokenType::LEFT_PAREN),
-            ')' => self.add_token(TokenType::RIGHT_PAREN),
-            '{' => self.add_token(TokenType::LEFT_BRACE),
-            '}' => self.add_token(TokenType::RIGHT_BRACE),
-            '*' => self.add_token(TokenType::STAR),
-            ',' => self.add_token(TokenType::COMMA),
-            '.' => self.add_token(TokenType::DOT),
-            '-' => self.add_token(TokenType::MINUS),
-            '+' => self.add_token(TokenType::PLUS),
-            ';' => self.add_token(TokenType::SEMICOLON),
+            '(' => self.add_token(TokenType::LEFT_PAREN, None),
+            ')' => self.add_token(TokenType::RIGHT_PAREN, None),
+            '{' => self.add_token(TokenType::LEFT_BRACE, None),
+            '}' => self.add_token(TokenType::RIGHT_BRACE, None),
+            '*' => self.add_token(TokenType::STAR, None),
+            ',' => self.add_token(TokenType::COMMA, None),
+            '.' => self.add_token(TokenType::DOT, None),
+            '-' => self.add_token(TokenType::MINUS, None),
+            '+' => self.add_token(TokenType::PLUS, None),
+            ';' => self.add_token(TokenType::SEMICOLON, None),
+            '"' => {
+                self.string_analyzer();
+                return;
+            }
             '\n' => {
                 self.line += 1;
                 //eprintln!("whitespace line is {}", self.line);
@@ -108,7 +134,7 @@ impl Scanner {
                             self.advance(); // advancing till at end of comment
                         }
                     }
-                    _ => self.add_token(TokenType::SLASH),
+                    _ => self.add_token(TokenType::SLASH, None),
                 }
             }
             '=' => {
@@ -117,10 +143,10 @@ impl Scanner {
                 match next {
                     '=' => {
                         self.advance(); // remove next token
-                        self.add_token(TokenType::EQUAL_EQUAL);
+                        self.add_token(TokenType::EQUAL_EQUAL, None);
                     }
 
-                    _ => self.add_token(TokenType::EQUAL),
+                    _ => self.add_token(TokenType::EQUAL, None),
                 }
             }
             '!' => {
@@ -129,10 +155,10 @@ impl Scanner {
                 match next {
                     '=' => {
                         self.advance(); // remove next token
-                        self.add_token(TokenType::BANG_EQUAL);
+                        self.add_token(TokenType::BANG_EQUAL, None);
                     }
 
-                    _ => self.add_token(TokenType::BANG),
+                    _ => self.add_token(TokenType::BANG, None),
                 }
             }
             '>' => {
@@ -141,10 +167,10 @@ impl Scanner {
                 match next {
                     '=' => {
                         self.advance(); // remove next token
-                        self.add_token(TokenType::GREATER_EQUAL);
+                        self.add_token(TokenType::GREATER_EQUAL, None);
                     }
 
-                    _ => self.add_token(TokenType::GREATER),
+                    _ => self.add_token(TokenType::GREATER, None),
                 }
             }
             '<' => {
@@ -153,10 +179,10 @@ impl Scanner {
                 match next {
                     '=' => {
                         self.advance(); // remove next token
-                        self.add_token(TokenType::LESS_EQUAL);
+                        self.add_token(TokenType::LESS_EQUAL, None);
                     }
 
-                    _ => self.add_token(TokenType::LESS),
+                    _ => self.add_token(TokenType::LESS, None),
                 }
             }
 
