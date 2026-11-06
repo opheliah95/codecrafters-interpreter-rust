@@ -32,7 +32,7 @@ impl Scanner {
     }
 
     fn add_token(&mut self, token_type: TokenType, value: Option<&str>) {
-        let txt = self.source.get(self.start..self.current).unwrap();
+        let txt = self.source.get(self.start..self.current).unwrap_or("");
         let literal = value.unwrap_or("null");
         let new_token = Token {
             token_type: token_type,
