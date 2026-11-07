@@ -33,8 +33,13 @@ impl Scanner {
 
     fn add_token(&mut self, token_type: TokenType) {
         let txt = self.source.get(self.start..self.current).unwrap_or("null");
+        let mut lexeme  = "null";
         let digit = txt.parse::<f64>();
         let mut literal = txt.to_string();
+
+        if token_type == TokenType::STRING || token_type == TokenType::NUMBER{
+            lexeme = txt;
+        }
         match digit {
             Ok(d) => {
                 let decimals = txt.rfind(".").unwrap_or(0);
@@ -58,7 +63,7 @@ impl Scanner {
         }
         let new_token = Token {
             token_type: token_type,
-            lexeme: txt.to_string(),
+            lexeme: lexeme.to_string(),
             literal: literal,
             line: self.line,
         };

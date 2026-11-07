@@ -1,5 +1,6 @@
 use std::fmt;
 #[derive(Clone, Copy, Debug)]
+#[derive(PartialEq)]
 pub enum TokenType {
     //one or two character token
     EQUAL,
@@ -53,6 +54,7 @@ pub enum TokenType {
 // }
 
 #[derive(Clone)]
+
 pub struct Token {
     pub token_type: TokenType,
     pub lexeme: String,
