@@ -45,6 +45,9 @@ impl Scanner {
                     //eprintln!("after decimals {:?}", after_decimal);
                     if after_decimal.iter().all(|x| *x == '0') {
                         literal = format!("{:.1}", d);
+                    } else if after_decimal.len() > 1 && *after_decimal.last().unwrap() == '0' {
+                        let final_digit = txt.len() - 1;
+                        literal = format!("{}.{}", &txt[..decimals], &txt[decimals + 1..final_digit]);
                     } else {
                         literal = format!("{}.{}", &txt[..decimals], &txt[decimals + 1..]);
                     }
