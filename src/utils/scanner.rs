@@ -78,8 +78,8 @@ impl Scanner {
         return char_found;
     }
 
-     fn string_analyzer(&mut self) {
-        while self.peek() != '"' && ! self.is_at_end() {
+    fn string_analyzer(&mut self) {
+        while self.peek() != '"' && !self.is_at_end() {
             // handle new line
             if self.peek() == '\n' {
                 self.line += 1
@@ -96,8 +96,42 @@ impl Scanner {
 
         // handle the end ""
         self.advance();
-        let output = self.source[self.start + 1..self.current-1].to_string();
+        let output = self.source[self.start + 1..self.current - 1].to_string();
         self.add_token(TokenType::STRING, Some(&output));
+    }
+
+    fn number(&mut self) {
+        let mut peek = self.peek();
+        while self.is_digit(peek) {
+            self.advance();
+            peek = self.peek();
+            let peek_next = self.peek_next();
+
+            if peek == '.' || self.is_digit(peek_next) {
+                self.advance();
+                peek = self.peek();
+            }
+        }
+        let d_str = &self
+            .source
+            .get(self.start..self.current)
+            .unwrap_or("")
+            .to_string();
+        let d_double = d_str.parse::<f64>().unwrap();
+        let num_decimals = d_str.rfind(".").unwrap_or_default();
+        if num_decimals == 0 {
+            let float_str = format!("{}.0", &d_str);
+            //eprintln!("INT: the float str is {float_str}");
+            self.add_token(TokenType::NUMBER, Some(&float_str));
+        } else {
+            let float_str = format!("{}.{}", &d_str[..num_decimals], &d_str[num_decimals + 1..]);
+            //eprintln!("the float str is {float_str}");
+            self.add_token(TokenType::NUMBER, Some(&float_str));
+        };
+    }
+
+    fn is_digit(&mut self, c: char) -> bool {
+        return c.is_ascii_digit();
     }
 
     pub fn scan_token(&mut self) {
@@ -114,6 +148,9 @@ impl Scanner {
             '-' => self.add_token(TokenType::MINUS, None),
             '+' => self.add_token(TokenType::PLUS, None),
             ';' => self.add_token(TokenType::SEMICOLON, None),
+            d if self.is_digit(d) => {
+                self.number();
+            }
             '"' => {
                 self.string_analyzer();
                 return;
@@ -121,11 +158,11 @@ impl Scanner {
             '\n' => {
                 self.line += 1;
                 //eprintln!("whitespace line is {}", self.line);
-            },
-            x if vec![' ',  '\r'].contains(&x) => {
+            }
+            x if vec![' ', '\r'].contains(&x) => {
                 return;
-            },
-            '\t' => return, 
+            }
+            '\t' => return,
             '/' => {
                 let next = self.peek();
                 // see if this is a comment
