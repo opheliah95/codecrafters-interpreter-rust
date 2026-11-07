@@ -34,10 +34,10 @@ impl Scanner {
     fn add_token(&mut self, token_type: TokenType) {
         let txt = self.source.get(self.start..self.current).unwrap_or("null");
         let digit = txt.parse::<f64>();
-        let mut literal = txt.to_string();
+        let mut literal = "null".to_string();
 
         if token_type == TokenType::STRING || token_type == TokenType::NUMBER{
-
+            literal = txt.to_string();
         }
         match digit {
             Ok(d) => {
