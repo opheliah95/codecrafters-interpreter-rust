@@ -31,7 +31,7 @@ impl Scanner {
         return self.current >= self.source.len();
     }
 
-    fn add_token(&mut self, token_type: TokenType, value: Option<&str>) {
+    fn add_token(&mut self, token_type: TokenType) {
         let txt = self.source.get(self.start..self.current).unwrap_or("null");
         let digit = txt.parse::<f64>();
         let mut literal = txt.to_string();
@@ -40,7 +40,15 @@ impl Scanner {
                 let decimals = txt.rfind(".").unwrap_or(0);
                 if decimals == 0 {
                     literal = format!("{:.1}", d);
-                } 
+                } else {
+                    let after_decimal: Vec<char> = txt[decimals + 1..].chars().collect();
+                    //eprintln!("after decimals {:?}", after_decimal);
+                    if after_decimal.iter().all(|x| *x == '0') {
+                        literal = format!("{:.1}", d);
+                    } else {
+                        literal = format!("{}.{}", &txt[..decimals], &txt[decimals + 1..]);
+                    }
+                }
             }
 
             Err(_) => {}
@@ -108,7 +116,7 @@ impl Scanner {
         // handle the end ""
         self.advance();
         let output = self.source[self.start + 1..self.current - 1].to_string();
-        self.add_token(TokenType::STRING, Some(&output));
+        self.add_token(TokenType::STRING);
     }
 
     fn number(&mut self) {
@@ -135,11 +143,11 @@ impl Scanner {
         if num_decimals == 0 {
             let float_str = format!("{}.0", &d_str);
             //eprintln!("INT: the float str is {float_str}");
-            self.add_token(TokenType::NUMBER, Some(&float_str));
+            self.add_token(TokenType::NUMBER);
         } else {
             let float_str = format!("{}.{}", &d_str[..num_decimals], &d_str[num_decimals + 1..]);
             //eprintln!("the float str is {float_str}");
-            self.add_token(TokenType::NUMBER, Some(&float_str));
+            self.add_token(TokenType::NUMBER);
         };
     }
 
@@ -151,16 +159,16 @@ impl Scanner {
         let c: char = self.advance();
         //eprintln!("c is {c} c=whitespace => {}", c =='\n');
         match (c) {
-            '(' => self.add_token(TokenType::LEFT_PAREN, None),
-            ')' => self.add_token(TokenType::RIGHT_PAREN, None),
-            '{' => self.add_token(TokenType::LEFT_BRACE, None),
-            '}' => self.add_token(TokenType::RIGHT_BRACE, None),
-            '*' => self.add_token(TokenType::STAR, None),
-            ',' => self.add_token(TokenType::COMMA, None),
-            '.' => self.add_token(TokenType::DOT, None),
-            '-' => self.add_token(TokenType::MINUS, None),
-            '+' => self.add_token(TokenType::PLUS, None),
-            ';' => self.add_token(TokenType::SEMICOLON, None),
+            '(' => self.add_token(TokenType::LEFT_PAREN),
+            ')' => self.add_token(TokenType::RIGHT_PAREN),
+            '{' => self.add_token(TokenType::LEFT_BRACE),
+            '}' => self.add_token(TokenType::RIGHT_BRACE),
+            '*' => self.add_token(TokenType::STAR),
+            ',' => self.add_token(TokenType::COMMA),
+            '.' => self.add_token(TokenType::DOT),
+            '-' => self.add_token(TokenType::MINUS),
+            '+' => self.add_token(TokenType::PLUS),
+            ';' => self.add_token(TokenType::SEMICOLON),
             d if self.is_digit(d) => {
                 self.number();
             }
@@ -185,7 +193,7 @@ impl Scanner {
                             self.advance(); // advancing till at end of comment
                         }
                     }
-                    _ => self.add_token(TokenType::SLASH, None),
+                    _ => self.add_token(TokenType::SLASH),
                 }
             }
             '=' => {
@@ -194,10 +202,10 @@ impl Scanner {
                 match next {
                     '=' => {
                         self.advance(); // remove next token
-                        self.add_token(TokenType::EQUAL_EQUAL, None);
+                        self.add_token(TokenType::EQUAL_EQUAL);
                     }
 
-                    _ => self.add_token(TokenType::EQUAL, None),
+                    _ => self.add_token(TokenType::EQUAL),
                 }
             }
             '!' => {
@@ -206,10 +214,10 @@ impl Scanner {
                 match next {
                     '=' => {
                         self.advance(); // remove next token
-                        self.add_token(TokenType::BANG_EQUAL, None);
+                        self.add_token(TokenType::BANG_EQUAL);
                     }
 
-                    _ => self.add_token(TokenType::BANG, None),
+                    _ => self.add_token(TokenType::BANG),
                 }
             }
             '>' => {
@@ -218,10 +226,10 @@ impl Scanner {
                 match next {
                     '=' => {
                         self.advance(); // remove next token
-                        self.add_token(TokenType::GREATER_EQUAL, None);
+                        self.add_token(TokenType::GREATER_EQUAL);
                     }
 
-                    _ => self.add_token(TokenType::GREATER, None),
+                    _ => self.add_token(TokenType::GREATER),
                 }
             }
             '<' => {
@@ -230,10 +238,10 @@ impl Scanner {
                 match next {
                     '=' => {
                         self.advance(); // remove next token
-                        self.add_token(TokenType::LESS_EQUAL, None);
+                        self.add_token(TokenType::LESS_EQUAL);
                     }
 
-                    _ => self.add_token(TokenType::LESS, None),
+                    _ => self.add_token(TokenType::LESS),
                 }
             }
 
