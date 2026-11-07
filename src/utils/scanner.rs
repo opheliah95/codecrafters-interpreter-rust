@@ -37,10 +37,13 @@ impl Scanner {
         let mut literal = txt.to_string();
         match digit {
             Ok(d) => {
-                literal = format!("{:.1}", d);
+                let decimals = txt.rfind(".").unwrap_or(0);
+                if decimals == 0 {
+                    literal = format!("{:.1}", d);
+                } 
             }
 
-            Err(_) => { }
+            Err(_) => {}
         }
         let new_token = Token {
             token_type: token_type,
