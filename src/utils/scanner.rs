@@ -37,7 +37,7 @@ impl Scanner {
         let mut literal = "null".to_string();
 
         if token_type == TokenType::STRING || token_type == TokenType::NUMBER {
-            literal = txt.to_string();
+            literal = txt.to_string().replace("\"", "");
         }
         match digit {
             Ok(d) => {
