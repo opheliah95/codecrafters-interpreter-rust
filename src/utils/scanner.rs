@@ -137,7 +137,11 @@ impl Scanner {
             if peek == '.' || self.is_digit(peek_next) {
                 self.advance();
             }
-            peek = self.peek();
+
+            while self.is_digit(peek) {
+                self.advance();
+                peek = self.peek();
+            }
         }
         self.add_token(TokenType::NUMBER);
     }
