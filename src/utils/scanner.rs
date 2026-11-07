@@ -36,7 +36,7 @@ impl Scanner {
         let digit = txt.parse::<f64>();
         let mut literal = "null".to_string();
 
-        if token_type == TokenType::STRING || token_type == TokenType::NUMBER{
+        if token_type == TokenType::STRING || token_type == TokenType::NUMBER {
             literal = txt.to_string();
         }
         match digit {
@@ -51,7 +51,8 @@ impl Scanner {
                         literal = format!("{:.1}", d);
                     } else if after_decimal.len() > 1 && *after_decimal.last().unwrap() == '0' {
                         let final_digit = txt.len() - 1;
-                        literal = format!("{}.{}", &txt[..decimals], &txt[decimals + 1..final_digit]);
+                        literal =
+                            format!("{}.{}", &txt[..decimals], &txt[decimals + 1..final_digit]);
                     } else {
                         literal = format!("{}.{}", &txt[..decimals], &txt[decimals + 1..]);
                     }
@@ -135,8 +136,8 @@ impl Scanner {
 
             if peek == '.' || self.is_digit(peek_next) {
                 self.advance();
-                peek = self.peek();
             }
+            peek = self.peek();
         }
         self.add_token(TokenType::NUMBER);
     }
