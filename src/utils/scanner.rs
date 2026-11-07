@@ -131,24 +131,7 @@ impl Scanner {
                 peek = self.peek();
             }
         }
-        let d_str = &self
-            .source
-            .get(self.start..self.current)
-            .unwrap_or("")
-            .to_string();
-        let d_double = d_str.parse::<f64>().unwrap();
-        let num_decimals = d_str.rfind(".").unwrap_or_default();
-        let float_str = format!("{}.0", &d_str);
-
-        if num_decimals == 0 {
-            let float_str = format!("{}.0", &d_str);
-            //eprintln!("INT: the float str is {float_str}");
-            self.add_token(TokenType::NUMBER);
-        } else {
-            let float_str = format!("{}.{}", &d_str[..num_decimals], &d_str[num_decimals + 1..]);
-            //eprintln!("the float str is {float_str}");
-            self.add_token(TokenType::NUMBER);
-        };
+        self.add_token(TokenType::NUMBER);
     }
 
     fn is_digit(&mut self, c: char) -> bool {
