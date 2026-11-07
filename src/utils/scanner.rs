@@ -32,12 +32,20 @@ impl Scanner {
     }
 
     fn add_token(&mut self, token_type: TokenType, value: Option<&str>) {
-        let txt = self.source.get(self.start..self.current).unwrap_or("");
-        let literal = value.unwrap_or("null");
+        let txt = self.source.get(self.start..self.current).unwrap_or("null");
+        let digit = txt.parse::<f64>();
+        let mut literal = txt.to_string();
+        match digit {
+            Ok(d) => {
+                literal = format!("{:.1}", d);
+            }
+
+            Err(_) => { }
+        }
         let new_token = Token {
             token_type: token_type,
             lexeme: txt.to_string(),
-            literal: literal.to_string(),
+            literal: literal,
             line: self.line,
         };
 
@@ -119,6 +127,8 @@ impl Scanner {
             .to_string();
         let d_double = d_str.parse::<f64>().unwrap();
         let num_decimals = d_str.rfind(".").unwrap_or_default();
+        let float_str = format!("{}.0", &d_str);
+
         if num_decimals == 0 {
             let float_str = format!("{}.0", &d_str);
             //eprintln!("INT: the float str is {float_str}");
