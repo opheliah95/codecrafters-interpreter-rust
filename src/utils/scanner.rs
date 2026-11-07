@@ -33,28 +33,27 @@ impl Scanner {
 
     fn add_token(&mut self, token_type: TokenType) {
         let txt = self.source.get(self.start..self.current).unwrap_or("null");
-        let mut literal  = "null";
         let digit = txt.parse::<f64>();
-        let mut lexeme = txt.to_string();
+        let mut literal = txt.to_string();
 
         if token_type == TokenType::STRING || token_type == TokenType::NUMBER{
-            literal = txt;
+
         }
         match digit {
             Ok(d) => {
                 let decimals = txt.rfind(".").unwrap_or(0);
                 if decimals == 0 {
-                    lexeme = format!("{:.1}", d);
+                    literal = format!("{:.1}", d);
                 } else {
                     let after_decimal: Vec<char> = txt[decimals + 1..].chars().collect();
                     //eprintln!("after decimals {:?}", after_decimal);
                     if after_decimal.iter().all(|x| *x == '0') {
-                        lexeme = format!("{:.1}", d);
+                        literal = format!("{:.1}", d);
                     } else if after_decimal.len() > 1 && *after_decimal.last().unwrap() == '0' {
                         let final_digit = txt.len() - 1;
-                        lexeme = format!("{}.{}", &txt[..decimals], &txt[decimals + 1..final_digit]);
+                        literal = format!("{}.{}", &txt[..decimals], &txt[decimals + 1..final_digit]);
                     } else {
-                        lexeme = format!("{}.{}", &txt[..decimals], &txt[decimals + 1..]);
+                        literal = format!("{}.{}", &txt[..decimals], &txt[decimals + 1..]);
                     }
                 }
             }
@@ -63,8 +62,8 @@ impl Scanner {
         }
         let new_token = Token {
             token_type: token_type,
-            lexeme: lexeme,
-            literal: literal.to_string(),
+            lexeme: txt.to_string(),
+            literal: literal,
             line: self.line,
         };
 
