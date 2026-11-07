@@ -33,11 +33,11 @@ impl Scanner {
 
     fn add_token(&mut self, token_type: TokenType, value: Option<&str>) {
         let txt = self.source.get(self.start..self.current).unwrap_or("null");
-        let digit = txt.parse::<i32>();
+        let digit = txt.parse::<f64>();
         let mut literal = txt.to_string();
         match digit {
             Ok(d) => {
-                literal = format!("{d}.0");
+                literal = format!("{:.1}", d);
             }
 
             Err(_) => { }
