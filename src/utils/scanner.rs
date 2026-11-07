@@ -37,7 +37,7 @@ impl Scanner {
         let mut literal = txt.to_string();
         match digit {
             Ok(d) => {
-                literal = format!("{:.1}", d);
+                literal = format!("{d}.0");
             }
 
             Err(_) => { }
