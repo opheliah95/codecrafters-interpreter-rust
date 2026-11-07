@@ -131,7 +131,6 @@ impl Scanner {
         let mut peek = self.peek();
         while self.is_digit(peek) {
             self.advance();
-            peek = self.peek();
             let peek_next = self.peek_next();
 
             if peek == '.' || self.is_digit(peek_next) {
@@ -142,6 +141,8 @@ impl Scanner {
                     peek = self.peek();
                 }
             }
+
+            peek = self.peek();
         }
         self.add_token(TokenType::NUMBER);
     }
